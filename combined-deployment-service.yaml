@@ -1,0 +1,116 @@
+--- # ms-order
+apiVersion: apps/v1
+kind: Deployment # Kubernetes resource kind we are creating
+metadata:
+  namespace: akh
+  name: ms-order
+spec:
+  selector:
+    matchLabels:
+      app: ms-order
+  replicas: 1 # Number of replicas that will be created for this deployment
+  template:
+    metadata:
+      labels:
+        app: ms-order
+    spec:
+      containers:
+        - name: ms-order
+          image: ms-order # Image that will be used to containers in the cluster
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8501 # The port that the container is running on in the cluster
+---
+apiVersion: v1 # Kubernetes API version
+kind: Service # Kubernetes resource kind we are creating
+metadata:  # Metadata of the resource kind we are creating
+  name:  ms-order
+  namespace: akh
+  labels:
+    app: ms-order
+spec:
+  selector:
+    app: ms-order
+  ports:
+    - protocol: TCP
+      port: 8501 # The port that the service is running on in the cluster
+      targetPort: 8501 # The port exposed by the service
+  type: LoadBalancer # type of the service.
+
+--- # ms-inventory
+apiVersion: apps/v1
+kind: Deployment # Kubernetes resource kind we are creating
+metadata:
+  namespace: akh
+  name: ms-inventory
+spec:
+  selector:
+    matchLabels:
+      app: ms-inventory
+  replicas: 1 # Number of replicas that will be created for this deployment
+  template:
+    metadata:
+      labels:
+        app: ms-inventory
+    spec:
+      containers:
+        - name: ms-inventory
+          image: ms-inventory # Image that will be used to containers in the cluster
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8502 # The port that the container is running on in the cluster
+---
+apiVersion: v1 # Kubernetes API version
+kind: Service # Kubernetes resource kind we are creating
+metadata:  # Metadata of the resource kind we are creating
+  name:  ms-inventory
+  namespace: akh
+  labels:
+    app: ms-inventory
+spec:
+  selector:
+    app: ms-inventory
+  ports:
+    - protocol: TCP
+      port: 8502 # The port that the service is running on in the cluster
+      targetPort: 8502 # The port exposed by the service
+  type: LoadBalancer # type of the service.
+
+--- #ms-payment
+apiVersion: apps/v1
+kind: Deployment # Kubernetes resource kind we are creating
+metadata:
+  namespace: akh
+  name: ms-payment
+spec:
+  selector:
+    matchLabels:
+      app: ms-payment
+  replicas: 1 # Number of replicas that will be created for this deployment
+  template:
+    metadata:
+      labels:
+        app: ms-payment
+    spec:
+      containers:
+        - name: ms-payment
+          image: ms-payment # Image that will be used to containers in the cluster
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8503 # The port that the container is running on in the cluster
+---
+apiVersion: v1 # Kubernetes API version
+kind: Service # Kubernetes resource kind we are creating
+metadata:  # Metadata of the resource kind we are creating
+  name:  ms-payment
+  namespace: akh
+  labels:
+    app: ms-payment
+spec:
+  selector:
+    app: ms-payment
+  ports:
+    - protocol: TCP
+      port: 8503 # The port that the service is running on in the cluster
+      targetPort: 8503 # The port exposed by the service
+  type: LoadBalancer # type of the service.

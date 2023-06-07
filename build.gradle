@@ -1,0 +1,117 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.1'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+    id 'jacoco'
+    id 'org.sonarqube' version '3.0'
+    id 'checkstyle'
+}
+
+group = 'com.company.akh'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+subprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+    apply plugin: 'org.sonarqube'
+    apply plugin: 'checkstyle'
+
+    group = 'com.company.akh'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '11'
+
+    repositories {
+        if (!hasProperty('jenkins')) {
+            mavenCentral()
+        }
+        maven { url "https://nexus.kblab.local/repository/maven-public" }
+    }
+
+    ext {
+        set('springCloudVersion', "2021.0.0")
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-aop'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+        implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+        implementation 'org.springframework.cloud:spring-cloud-starter-consul-config'
+        implementation "org.apache.commons:commons-lang3:${apacheCommonsLang3Version}"
+        implementation "az.kapitalbank.atlas:lib-common:${libCommonVersion}"
+        implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoderVersion}"
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'org.springframework.security:spring-security-test'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+    jar {
+        enabled = false
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    wrapper {
+        gradleVersion = '7.3.2'
+    }
+
+    checkstyle {
+        toolVersion = "8.15"
+    }
+
+    tasks.withType(Checkstyle) {
+        reports {
+            xml.enabled true
+            html.enabled true
+        }
+    }
+
+    jacoco {
+        toolVersion = "0.8.5"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+        }
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.java.coveragePlugin", "jacoco"
+            property "sonar.debug", "true"
+            property "sonar.jacoco.reportPath", "build/jacoco/test.exec"
+            property "sonar.junit.reportsPath", "build/test-results/test"
+            property "sonar.projectKey", rootProject.name
+            property "sonar.host.url", "https://sonarqube.kapitalbank.az"
+            property "sonar.scm.forceReloadAll", "true"
+            property "sonar.java.checkstyle.reportPaths", "build/reports/checkstyle/main.xml"
+            property "sonar.coverage.exclusions",
+                    "**/com/company/akh/**"
+        }
+    }
+}

@@ -1,0 +1,65 @@
+server:
+  port: 8503
+
+logging:
+  level:
+    ROOT: WARN
+    com.company.akh: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ "env", "health", "info" ]
+
+spring:
+  application:
+    name: ms-payment
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher #issue with swagger & actuator
+  cloud:
+    vault:
+      enabled: false
+    consul:
+      enabled: false
+  datasource:
+#    url: "jdbc:postgresql://localhost:5431/payment"
+    url: "jdbc:postgresql://host.docker.internal:5431/payment"
+    username: "moon"
+    password: "moon"
+    hikari:
+      pool-name: IamasArchiveTranPool
+      auto-commit: false
+      connection-timeout: 10000
+      max-lifetime: 120000
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+  kafka:
+#    bootstrap-servers: 127.0.0.1:9092
+    bootstrap-servers: host.docker.internal:9092
+    consumer:
+      auto-offset-reset: earliest
+
+kafka:
+  topics:
+    inventory_request:
+      partitions: 1
+      replicas: 1
+  type-mappings:
+    - "InventoryRequest:com.company.akh.payment.messaging.event.InventoryRequest"
+    - "PaymentResponse:com.company.akh.payment.messaging.event.PaymentResponse"

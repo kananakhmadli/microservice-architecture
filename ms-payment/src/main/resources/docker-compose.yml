@@ -1,0 +1,16 @@
+version: '3.1'
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5431:5432"
+    environment:
+      POSTGRES_USER: moon
+      POSTGRES_PASSWORD: moon
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080"

@@ -1,0 +1,84 @@
+server:
+  port: 8502
+
+logging:
+  level:
+    ROOT: WARN
+    com.company.akh: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ "env", "health", "info" ]
+
+spring:
+  application:
+    name: ms-inventory
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher #issue with swagger & actuator
+  cloud:
+    vault:
+      enabled: false
+    consul:
+      enabled: false
+  datasource:
+#    url: "jdbc:postgresql://localhost:5431/inventory"
+    url: "jdbc:postgresql://host.docker.internal:5431/inventory"
+    username: "moon"
+    password: "moon"
+    hikari:
+      pool-name: IamasArchiveTranPool
+      auto-commit: false
+      connection-timeout: 10000
+      #      connection-test-query: SELECT 1 FROM dual
+      max-lifetime: 120000
+  #    type: com.zaxxer.hikari.HikariDataSource
+  #    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+  kafka:
+#    bootstrap-servers: 127.0.0.1:9092
+    bootstrap-servers: host.docker.internal:9092
+    consumer:
+      auto-offset-reset: earliest
+
+kafka:
+  topics:
+    inventory_request:
+      partitions: 1
+      replicas: 1
+    inventory_response:
+      partitions: 1
+      replicas: 1
+    payment_response:
+      partitions: 1
+      replicas: 1
+    order_request:
+      partitions: 1
+      replicas: 1
+  type-mappings:
+    - "OrderRequestEvent:com.company.akh.inventory.messaging.event.OrderRequestEvent"
+    - "PaymentResponse:com.company.akh.inventory.messaging.event.PaymentResponse"
+    - "InventoryResponse:com.company.akh.inventory.messaging.event.InventoryResponse"
+    - "InventoryRequest:com.company.akh.inventory.messaging.event.InventoryRequest"
+
+service:
+  order:
+#    url: "http://localhost:8501/orders"
+    url: "http://ms-order/orders"

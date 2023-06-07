@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    ROOT: ERROR
+    com.company.akh.gateway: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ "env", "health", "info", "refresh" ]
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: ms-gateway
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+  cloud:
+    consul:
+      enabled: false
+    vault:
+      enabled: false
+    gateway:
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 10000
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+      routes:
+        - id: ms-order
+          uri: http://localhost:8501
+          predicates:
+            - Path=/api/v1/**
+          filters:
+            - StripPrefix=2
+
+security:
+  jwt:
+    base64-secret: "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgPhHQR06iiv/+X322uyG6fmSvXc2tntbFnkhSP5BgJpEGKRZPHJAhf+vsVltFZ7DpFH+qrkMX6i3owsft+W72WlFKd80xtid6+x2lOwtRP97LW7+48RjuWvwrF8nsTO1LbQrutfobW23x8TUZYEDExAEZ3oIM+UdMVQNENMg+d/WvYK1nZI3hb8kDVRPxV2IMEJ/O28u3S7TyML3wcKafp6Gq3z8s3IlqRLMrnVop3atVVtb0Z9KDRrKOq0CiwzFAoG6uX+kYWptGLDYFSGOM8Dwi/7SYRkUX7oLPiIdtHZxQw6spyY0CMIdF/iEuU5FXeN7cndr+/ymPMFerZ/C+QIDAQAB"

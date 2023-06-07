@@ -1,0 +1,43 @@
+project: atlas
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: gw-atlas
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+  cloud:
+    consul:
+      host: consul.kapitalbank.az
+      port: 8500
+      config:
+        enabled: true
+        fail-fast: true
+        format: yaml
+        profile-separator: '-'
+        data-key: data
+        prefixes:
+          - config/${project}/${spring.application.name}
+
+    vault:
+      host: vault.kapitalbank.az
+      port: 8200
+      fail-fast: true
+      scheme: http
+      kv:
+        enabled: true
+        application-name: ${project}/${spring.application.name}
+        backend: secret
+        profile-separator: '/'
+      authentication: APPROLE
+      app-role:
+        role-id: ${VAULT_ROLE_ID}
+        secret-id: ${VAULT_SECRET_ID}
+  config:
+    import:
+      - 'vault:/secret/${project}/${spring.application.name}/${spring.profiles.active}'
+      - 'consul:/'
+    activate:
+      on-profile: "!local"
