@@ -20,7 +20,7 @@ public class Product {
     @SequenceGenerator(name = "seq_product", allocationSize = 1)
     @GeneratedValue(generator = "seq_product", strategy = GenerationType.SEQUENCE)
     private Long id;
-    private BigDecimal amount;
+    private BigDecimal price;
     private String name;
     private Integer quantity;
 

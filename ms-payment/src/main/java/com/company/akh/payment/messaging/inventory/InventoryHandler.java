@@ -35,9 +35,9 @@ public class InventoryHandler {
                     BigDecimal totalAmount =
                             event.getAmount().multiply(BigDecimal.valueOf(event.getQuantity()));
 
-                    if (hasEnoughBalance(totalAmount, account.getAmount())) {
-                        BigDecimal newBalance = account.getAmount().subtract(totalAmount);
-                        account.setAmount(newBalance);
+                    if (hasEnoughBalance(totalAmount, account.getBalance())) {
+                        BigDecimal newBalance = account.getBalance().subtract(totalAmount);
+                        account.setBalance(newBalance);
                         accountRepository.save(account);
 
                         paymentResponse.setStatus(PaymentStatus.PAYMENT_COMPLETED);

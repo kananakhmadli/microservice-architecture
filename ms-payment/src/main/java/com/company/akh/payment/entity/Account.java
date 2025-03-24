@@ -14,7 +14,7 @@ public class Account {
 
     @Id
     private String accountNumber;
-    private BigDecimal amount;
+    private BigDecimal balance;
     private Long userId;
 
 }

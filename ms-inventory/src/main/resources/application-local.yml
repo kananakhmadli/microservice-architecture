@@ -28,8 +28,8 @@ spring:
     consul:
       enabled: false
   datasource:
-#    url: "jdbc:postgresql://localhost:5431/inventory"
-    url: "jdbc:postgresql://host.docker.internal:5431/inventory"
+    url: "jdbc:postgresql://localhost:5431/inventory"
+#    url: "jdbc:postgresql://host.docker.internal:5431/inventory"
     username: "moon"
     password: "moon"
     hikari:
@@ -53,8 +53,8 @@ spring:
       hibernate.order_inserts: true
       hibernate.order_updates: true
   kafka:
-#    bootstrap-servers: 127.0.0.1:9092
-    bootstrap-servers: host.docker.internal:9092
+    bootstrap-servers: 127.0.0.1:9092
+#    bootstrap-servers: host.docker.internal:9092
     consumer:
       auto-offset-reset: earliest
 
@@ -80,5 +80,5 @@ kafka:
 
 service:
   order:
-#    url: "http://localhost:8501/orders"
-    url: "http://ms-order/orders"
+    url: "http://localhost:8501/orders"
+#    url: "http://ms-order/orders"

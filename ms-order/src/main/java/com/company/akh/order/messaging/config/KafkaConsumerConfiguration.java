@@ -57,8 +57,7 @@ public class KafkaConsumerConfiguration {
 
     @Bean(KafkaConstants.CONTAINER_INVENTORY_RESPONSE_LISTENER_FACTORY)
     public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, Object> containerFactory =
-                new ConcurrentKafkaListenerContainerFactory<>();
+       var containerFactory = new ConcurrentKafkaListenerContainerFactory<String, Object> ();
         containerFactory.setConsumerFactory(kafkaConsumerFactory());
         containerFactory.setConcurrency(customKafkaProperties.getTopics()
                 .get(KafkaConstants.TOPIC_INVENTORY_RESPONSE)

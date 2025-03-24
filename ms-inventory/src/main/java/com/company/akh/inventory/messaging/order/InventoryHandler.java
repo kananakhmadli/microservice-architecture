@@ -62,7 +62,7 @@ public class InventoryHandler {
         inventoryRequest.setUid(event.getUid());
         inventoryRequest.setStatus(InventoryStatus.SUCCESS);
         inventoryRequest.setUserId(event.getUserId());
-        inventoryRequest.setAmount(product.getAmount());
+        inventoryRequest.setAmount(product.getPrice());
         inventoryRequest.setQuantity(event.getQuantity());
         // creating new event for checking user balance
         inventoryRequestKafkaTemplate.send(

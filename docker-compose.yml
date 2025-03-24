@@ -8,14 +8,9 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-#      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://host.docker.internal:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -41,6 +36,23 @@ services:
     networks:
       - net
 
+  schema-registry:
+    platform: linux/amd64
+    image: confluentinc/cp-schema-registry:6.1.0
+    container_name: schema-registry
+    hostname: schema-registry
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181
+      TZ: Asia/Baku
+    networks:
+      - net
+    ports:
+      - "8083:8081"
+    depends_on:
+      - zookeeper
+      - broker
+
   kafka-drop:
     platform: linux/amd64
     image: obsidiandynamics/kafdrop
@@ -48,8 +60,7 @@ services:
     hostname: kafka-drop
     restart: "no"
     environment:
-#      KAFKA_BROKERCONNECT: "broker:29092"
-      KAFKA_BROKERCONNECT: "host.docker.internal:9092"
+      KAFKA_BROKERCONNECT: "broker:29092"
       JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
       TZ: Asia/Baku
     networks:
@@ -58,36 +69,6 @@ services:
       - "9000:9000"
     depends_on:
       - "broker"
-
-  db:
-    image: postgres
-    restart: always
-    container_name: db
-    ports:
-      - "5431:5432"
-    environment:
-      POSTGRES_USER: moon
-      POSTGRES_PASSWORD: moon
-      POSTGRES_HOST: db
-
-  adminer:
-    image: adminer
-    restart: always
-    container_name: adminer
-    ports:
-      - "8081:8080"
-
-  ms-order:
-    image: ms-order:0.7
-#    environment:
-#      SPRING_KAFKA_BOOTSTRAPSERVERS: broker:29092
-    ports:
-      - "8111:8111"
-    networks:
-      - net
-    depends_on:
-      - db
-      - broker
 
 networks:
   net:

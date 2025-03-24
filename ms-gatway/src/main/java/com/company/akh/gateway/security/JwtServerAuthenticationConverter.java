@@ -18,8 +18,7 @@ public class JwtServerAuthenticationConverter implements ServerAuthenticationCon
             return Mono.empty();
         }
 
-        var authorization =
-                exchange.getRequest()
+        var authorization = exchange.getRequest()
                         .getHeaders()
                         .getFirst(HttpHeaders.AUTHORIZATION);
 

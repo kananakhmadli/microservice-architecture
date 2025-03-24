@@ -18,17 +18,17 @@ public class InitializeDemoObject {
     public void init() {
         var product1 = new Product();
         product1.setName("Tv");
-        product1.setAmount(BigDecimal.valueOf(500));
+        product1.setPrice(BigDecimal.valueOf(500));
         product1.setQuantity(10);
 
         var product2 = new Product();
         product2.setName("Phone");
-        product2.setAmount(BigDecimal.valueOf(300));
+        product2.setPrice(BigDecimal.valueOf(300));
         product2.setQuantity(2);
 
         var product3 = new Product();
         product3.setName("Computer");
-        product3.setAmount(BigDecimal.valueOf(2000));
+        product3.setPrice(BigDecimal.valueOf(2000));
         product3.setQuantity(1);
 
         inventoryRepository.save(product1);
